@@ -1,4 +1,4 @@
-package easyserve
+package easy_serve
 
 import (
 	"flag"
@@ -16,5 +16,5 @@ func New() {
 }
 
 func Serve(){
-	
+
 }

@@ -6,6 +6,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const (
+	ServeType_HTTP = "http"
+	ServeType_GRPC = "grpc"
+
+	ServeEnv_Pro = "pro"
+)
+
+
 type Config struct {
 	Service Service `json:"service" yaml:"service"`
 }

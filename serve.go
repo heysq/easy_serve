@@ -9,11 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	ServeType_HTTP = "http"
-	ServeType_GRPC = "grpc"
-)
-
 var (
 	httpServer *serve.HttpServer
 )
@@ -29,7 +24,7 @@ func New() {
 
 func initServe() {
 	switch config.C.Service.ServeType {
-	case ServeType_HTTP:
+	case config.ServeType_HTTP:
 		httpServer = serve.NewHttpServer()
 	}
 }
@@ -37,7 +32,7 @@ func initServe() {
 func Serve() {
 	var err error
 	switch config.C.Service.ServeType {
-	case ServeType_HTTP:
+	case config.ServeType_HTTP:
 		err = httpServer.Start()
 	}
 	fmt.Println(err.Error())
@@ -45,7 +40,7 @@ func Serve() {
 
 func Stop() {
 	switch config.C.Service.ServeType {
-	case ServeType_HTTP:
+	case config.ServeType_HTTP:
 		httpServer.Stop()
 	}
 }

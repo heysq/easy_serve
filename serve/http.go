@@ -16,8 +16,11 @@ type HttpServer struct {
 func NewHttpServer() *HttpServer {
 	router := gin.New()
 	router.Use(gin.Recovery())
+	
+	if config.C.Service.Env != config.ServeEnv_Pro {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
-	gin.SetMode(gin.ReleaseMode)
 	gin.DisableConsoleColor()
 
 	return &HttpServer{

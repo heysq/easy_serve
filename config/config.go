@@ -13,6 +13,7 @@ type Config struct {
 type Service struct {
 	Env       string `json:"env" yaml:"env"`
 	ServeType string `json:"serve_type" yaml:"serve_type"`
+	ServePort int `json:"serve_port" yaml:"serve_port"`
 }
 
 var C = &Config{}

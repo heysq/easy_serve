@@ -7,12 +7,12 @@ import (
 )
 
 type Config struct {
-	Service Service
+	Service Service `json:"service" yaml:"service"`
 }
 
 type Service struct {
-	Env       string
-	ServeType string
+	Env       string `json:"env" yaml:"env"`
+	ServeType string `json:"serve_type" yaml:"serve_type"`
 }
 
 var C = &Config{}

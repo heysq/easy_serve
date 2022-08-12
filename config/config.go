@@ -9,6 +9,7 @@ import (
 const (
 	ServeType_HTTP = "http"
 	ServeType_GRPC = "grpc"
+	ServeType_CRON = "cronjob"
 	ServeEnv_Pro   = "pro"
 	ServeEnv_Test  = "test"
 )

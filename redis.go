@@ -12,7 +12,8 @@ var redisMap = make(map[string]*redisObj)
 
 type redisObj struct {
 	client *redis.Client
-	err   error
+	err    error
+	name   string
 }
 
 func initRedis() {
@@ -23,7 +24,7 @@ func initRedis() {
 			Password: conf.Password, // no password set
 			DB:       conf.DB,       // use default DB
 		})
-		var obj redisObj
+		var obj = redisObj{name: conf.Name}
 		if rdb == nil {
 			obj.client = nil
 			obj.err = fmt.Errorf("name %s not exists ", conf.Name)
@@ -34,5 +35,14 @@ func initRedis() {
 			obj.err = nil
 		}
 		redisMap[conf.Name] = &obj
+	}
+}
+
+func (o *redisObj) close() {
+	err := o.client.Close()
+	if err != nil {
+		fmt.Printf("redis exit failed, name: %s, err: %v\n", o.name, err)
+	} else {
+		fmt.Printf("redis exited, name: %s\n", o.name)
 	}
 }

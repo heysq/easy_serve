@@ -3,16 +3,22 @@ package easy_serve
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/signal"
+	"strings"
+	"sync"
+	"syscall"
 
 	"github.com/Sunqi43797189/easy_serve/config"
-	"github.com/Sunqi43797189/easy_serve/serve"
 	"github.com/gin-gonic/gin"
+	"github.com/go-co-op/gocron"
 	"github.com/go-redis/redis/v8"
-    "gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 var (
-	httpServer *serve.HttpServer
+	httpServer *httpserver
+	once       = sync.Once{}
 )
 
 var configFile = flag.String("i", "config.yaml", "config file")
@@ -27,32 +33,65 @@ func New() {
 }
 
 func initServe() {
-	switch config.C.Service.ServeType {
-	case config.ServeType_HTTP:
-		httpServer = serve.NewHttpServer()
+	for _, ty := range strings.Split(config.C.Service.ServeType, ",") {
+		switch ty {
+		case config.ServeType_HTTP:
+			httpServer = newHttpServer()
+		case config.ServeType_CRON:
+			cron = *newEasyCron()
+		}
 	}
 }
 
 func Serve() {
-	var err error
-	switch config.C.Service.ServeType {
-	case config.ServeType_HTTP:
-		err = httpServer.Start()
+	for _, ty := range strings.Split(config.C.Service.ServeType, ",") {
+		switch ty {
+		case config.ServeType_HTTP:
+			httpServer.start()
+		case config.ServeType_CRON:
+			cron.Start()
+		}
 	}
+	handleSignal()
+}
+
+func handleSignal() {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
+	once.Do(Stop)
 }
 
 func Stop() {
-	switch config.C.Service.ServeType {
-	case config.ServeType_HTTP:
-		httpServer.Stop()
+	for _, ty := range strings.Split(config.C.Service.ServeType, ",") {
+		switch ty {
+		case config.ServeType_HTTP:
+			httpServer.stop()
+		case config.ServeType_CRON:
+			cron.Stop()
+		}
 	}
+
+	for _, client := range redisMap {
+		client.close()
+	}
+
+	for _, client := range dbMap {
+		client.close()
+	}
+	fmt.Printf("easy serve stop pid: %d\n", os.Getpid())
+	os.Exit(0)
 }
 
 func HttpServeRouter() *gin.Engine {
-	return httpServer.HttpRouter()
+	return httpServer.router
 }
 
-func GetRedisClient(name string) (*redis.Client, error){
+func CronjobScheduler() *gocron.Scheduler {
+	return cron.scheduler
+}
+
+func GetRedisClient(name string) (*redis.Client, error) {
 	obj, ok := redisMap[name]
 	if !ok {
 		return nil, fmt.Errorf("name %s not exists", name)
@@ -60,7 +99,7 @@ func GetRedisClient(name string) (*redis.Client, error){
 	return obj.client, obj.err
 }
 
-func GetGormClient(name string) (*gorm.DB, error){
+func GetGormClient(name string) (*gorm.DB, error) {
 	obj, ok := dbMap[name]
 	if !ok {
 		return nil, fmt.Errorf("name %s not exists", name)

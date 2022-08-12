@@ -1,6 +1,7 @@
-package serve
+package easy_serve
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -8,22 +9,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type HttpServer struct {
+type httpserver struct {
 	router *gin.Engine
 	server http.Server
 }
 
-func NewHttpServer() *HttpServer {
+func newHttpServer() *httpserver {
 	router := gin.New()
 	router.Use(gin.Recovery())
-	
+
 	if config.C.Service.Env != config.ServeEnv_Pro {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	gin.DisableConsoleColor()
 
-	return &HttpServer{
+	return &httpserver{
 		server: http.Server{
 			Addr:    fmt.Sprintf(":%d", config.C.Service.ServePort),
 			Handler: router,
@@ -32,18 +33,20 @@ func NewHttpServer() *HttpServer {
 	}
 }
 
-func (s *HttpServer) Start() error {
-	err := s.server.ListenAndServe()
+func (s *httpserver) start() error {
+	var err error
+	go func() {
+		err = s.server.ListenAndServe()
+	}()
+	return err
+
+}
+
+func (s *httpserver) stop() {
+	err := s.server.Shutdown(context.Background())
 	if err != nil {
-		return err
+		fmt.Printf("httpserver exit failed, err: %v\n", err)
+	} else {
+		fmt.Println("httpserver exited")
 	}
-	return nil
-}
-
-func (s *HttpServer) Stop() {
-
-}
-
-func (s *HttpServer) HttpRouter() *gin.Engine {
-	return s.router
 }

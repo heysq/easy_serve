@@ -16,6 +16,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type EasyServeConfig struct {
+	ConfigFile   string
+	CustomConfig interface{}
+}
+
 var (
 	httpServer *httpserver
 	once       = sync.Once{}
@@ -23,9 +28,12 @@ var (
 
 var configFile = flag.String("i", "config.yaml", "config file")
 
-func New() {
+func New(c *EasyServeConfig) {
+	if len(c.ConfigFile) != 0 {
+		configFile = &c.ConfigFile
+	}
 	flag.Parse()
-	config.InitConf(*configFile)
+	config.InitConf(*configFile, c.CustomConfig)
 
 	initRedis()
 	initDB()
@@ -52,10 +60,6 @@ func Serve() {
 			cron.Start()
 		}
 	}
-	handleSignal()
-}
-
-func handleSignal() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	<-sigChan

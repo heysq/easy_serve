@@ -46,7 +46,7 @@ type DB struct {
 
 var C = &Config{}
 
-func InitConf(configFile string) error {
+func InitConf(configFile string, customConfig interface{}) error {
 	conf, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return err
@@ -54,6 +54,13 @@ func InitConf(configFile string) error {
 	err = yaml.Unmarshal(conf, C)
 	if err != nil {
 		return err
+	}
+
+	if customConfig != nil {
+		err = yaml.Unmarshal(conf, customConfig)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

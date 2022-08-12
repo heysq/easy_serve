@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-co-op/gocron"
 	"github.com/go-redis/redis/v8"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type EasyServeConfig struct {

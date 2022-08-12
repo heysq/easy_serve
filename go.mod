@@ -8,6 +8,8 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jinzhu/gorm v1.9.17-0.20211120011537-5c235b72a414
 	gopkg.in/yaml.v2 v2.4.0
+	gorm.io/driver/mysql v1.3.5
+	gorm.io/gorm v1.23.8
 )
 
 require (

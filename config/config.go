@@ -36,12 +36,19 @@ type Redis struct {
 }
 
 type DB struct {
-	Name     string `json:"name" yaml:"name"`
-	Host     string `json:"host" yaml:"host"`
-	Port     int    `json:"port" yaml:"port"`
-	Database string `json:"database" yaml:"database"`
-	UserName string `json:"username" yaml:"username"`
-	Password string `json:"password" yaml:"password"`
+	Name            string `json:"name" yaml:"name"`
+	Host            string `json:"host" yaml:"host"`
+	Port            int    `json:"port" yaml:"port"`
+	Database        string `json:"database" yaml:"database"`
+	UserName        string `json:"username" yaml:"username"`
+	Password        string `json:"password" yaml:"password"`
+	ConnMaxIdleTime int    `json:"max_idle_time" yaml:"max_idle_time"`
+	ConnMaxLifeTime int    `json:"max_life_time" yaml:"max_life_time"`
+	MaxIdleConn     int    `json:"max_idle_conn" yaml:"max_idle_conn"`
+	MaxLifeConn     int    `json:"max_life_conn" yaml:"max_life_conn"`
+	ConnectTimeout  int    `json:"connect_timeout" yaml:"connect_timeout"`
+	ReadTimeout     int    `json:"read_timeout" yaml:"read_timeout"`
+	WriteTimeout    int    `json:"write_timeout" yaml:"write_timeout"`
 }
 
 var C = &Config{}

@@ -18,7 +18,7 @@ func newHttpServer() *httpserver {
 	router := gin.New()
 	router.Use(gin.Recovery())
 
-	if config.C.Service.Env != config.ServeEnv_Pro {
+	if config.C.Service.Env == config.ServeEnv_Pro {
 		gin.SetMode(gin.ReleaseMode)
 	}
 

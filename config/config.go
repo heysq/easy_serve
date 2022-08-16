@@ -18,6 +18,7 @@ type Config struct {
 	Service Service `json:"service" yaml:"service"`
 	Redis   []Redis `json:"redis" yaml:"redis"`
 	DB      []DB    `json:"db" yaml:"db"`
+	Log     []Log   `json:"log" yaml:"log"`
 }
 
 type Service struct {
@@ -49,6 +50,14 @@ type DB struct {
 	ConnectTimeout  int    `json:"connect_timeout" yaml:"connect_timeout"`
 	ReadTimeout     int    `json:"read_timeout" yaml:"read_timeout"`
 	WriteTimeout    int    `json:"write_timeout" yaml:"write_timeout"`
+}
+
+type Log struct {
+	Name     string `json:"name" yaml:"name"`
+	LogPath string `json:"logpath" yaml:"logpath"`
+	Level    string `json:"level" yaml:"level"`
+	Compress bool   `json:"compress" yaml:"compress"`
+	MaxSize  int    `json:"max_size" yaml:"max_size"`
 }
 
 var C = &Config{}

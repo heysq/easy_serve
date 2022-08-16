@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-co-op/gocron"
 	"github.com/go-redis/redis/v8"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -35,6 +36,7 @@ func New(c *EasyServeConfig) {
 	flag.Parse()
 	config.InitConf(*configFile, c.CustomConfig)
 
+	initLogger()
 	initRedis()
 	initDB()
 	initServe()
@@ -109,4 +111,12 @@ func GetGormClient(name string) (*gorm.DB, error) {
 		return nil, fmt.Errorf("name %s not exists", name)
 	}
 	return obj.db, obj.err
+}
+
+func GetLogger(name string) (*zap.Logger, error) {
+	logger, ok := loggerMap[name]
+	if !ok {
+		return nil, fmt.Errorf("name %s not exists", name)
+	}
+	return logger, nil
 }

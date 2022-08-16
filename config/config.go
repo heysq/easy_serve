@@ -54,7 +54,7 @@ type DB struct {
 
 type Log struct {
 	Name     string `json:"name" yaml:"name"`
-	LogPath string `json:"logpath" yaml:"logpath"`
+	LogPath  string `json:"logpath" yaml:"logpath"`
 	Level    string `json:"level" yaml:"level"`
 	Compress bool   `json:"compress" yaml:"compress"`
 	MaxSize  int    `json:"max_size" yaml:"max_size"`

@@ -19,7 +19,7 @@ type dbobj struct {
 
 func initDB() {
 	for _, conf := range config.C.DB {
-		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%ds&readTimeout=%s&writeTimeout=%ds",
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds",
 			conf.UserName,
 			conf.Password,
 			conf.Host,
